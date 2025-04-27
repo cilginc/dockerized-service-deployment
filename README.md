@@ -124,6 +124,6 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: docker pull ghcr.io/cilginc/dockerized-service-deployment:latest && docker run -d -p 3000:3000 --env-file .env ghcr.io/cilginc/dockerized-service-deployment:latest
+          script: docker pull ghcr.io/cilginc/dockerized-service-deployment:latest && docker run -d -p 80:3000 --env-file .env ghcr.io/cilginc/dockerized-service-deployment:latest
 ```
 Change this workflow to your own enviroment
