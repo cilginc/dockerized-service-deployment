@@ -42,7 +42,58 @@ CMD [ "node", "index.js" ]
 
 3. Build and test the Docker image locally:
 ```bash
-docker build -t simple-node-service .
-docker run -p 3000:3000 --env-file .env simple-node-service
+docker build -t dockerized-service-deployment .
+docker run -p 3000:3000 --env-file .env dockerized-service-deployment
 ```
 
+## Setup a remote Linux Server
+Setup your linux server and add your SSH keys into your server.
+
+## Deploy the Dockerized Node.js Service
+
+1. Change the Workflow permissions:
+    1. Go to your repo settings
+    2. Select Read and write permissions under the Workflow permissions menu
+2. Add a Github Workflow:
+```yaml
+name: Build and Deploy Node.js Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull request
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Log in to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}  # GitHub's token to authenticate
+
+      # Build and tag the Docker image for GHCR
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/dockerized-service-deployment .
+
+      # Push the Docker image to GHCR
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/dockerized-service-deployment
+```
+3. Check the package that you push to registry:
+    You can see it under the packages tab.
+
+## Deploy to Server
