@@ -97,3 +97,33 @@ jobs:
     You can see it under the packages tab.
 
 ## Deploy to Server
+1. You need to manage Github Secrets first:
+ - `REMOTE_HOST`:IP of the server
+ - `REMOTE_USER`: User of the server
+ - `SSH_KEY`: Your private SSH key
+ - `SSH_PORT`: Your SSH port 
+Create another github workflow:
+```yaml
+name: Deploy Node.js Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull request
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute remote SSH commands using password
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: docker pull ghcr.io/cilginc/dockerized-service-deployment:latest && docker run -d -p 3000:3000 --env-file .env ghcr.io/cilginc/dockerized-service-deployment:latest
+```
+Change this workflow to your own enviroment
