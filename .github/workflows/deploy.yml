@@ -28,9 +28,9 @@ jobs:
       # Build and tag the Docker image for GHCR
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/simple-node-service:latest .
+          docker build -t ghcr.io/${{ github.repository_owner }}/dockerized-service-deployment .
 
       # Push the Docker image to GHCR
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/simple-node-service:latest
+          docker push ghcr.io/${{ github.repository_owner }}/dockerized-service-deployment
